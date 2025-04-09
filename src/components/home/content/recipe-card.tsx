@@ -29,7 +29,7 @@ function formatDateTime(date: Date) {
 
 interface RecipeImageProps extends Pick<Recipe, "image" | "title"> {
   isFavorite?: boolean;
-  toggleFavorite?: () => void;
+  toggleFavorite?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 function RecipeImage({
   image: src,
@@ -52,7 +52,6 @@ function RecipeImage({
         fill
         loading="lazy"
         style={{ objectFit: "cover", borderRadius: 15 }}
-        unoptimized
         onLoad={() => setIsLoading(false)}
       />
 
@@ -100,7 +99,9 @@ export function RecipeCard(props: RecipeProps) {
 
   const router = useRouter();
 
-  const toggleFavorite = () => {
+  const toggleFavorite = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+
     dispatch(recipeActions.toggleFavorite(props.recipe.id));
   };
 

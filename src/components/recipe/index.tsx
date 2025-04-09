@@ -1,11 +1,12 @@
 import type { Recipe } from "@/types";
 import { ContentLayout } from "../content-layout";
 import { FlexBox } from "../flexbox";
+import { Aside } from "./aside";
 
 export function Recipe({ recipe }: { recipe?: Recipe } = {}) {
   return (
     <ContentLayout
-      aside={<>Side</>}
+      aside={<Aside />}
       content={
         <FlexBox
           column

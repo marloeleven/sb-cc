@@ -1,10 +1,10 @@
-import { recipeActions } from "@/store/recipe";
+import { recipeActions, recipeSelectors } from "@/store/recipe";
 import { SortType } from "@/types";
 import { ExpandMoreOutlined } from "@mui/icons-material";
 import { Box, FormControl, MenuItem, styled } from "@mui/material";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { PropsWithChildren } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Placeholder = styled("span")(({ theme }) => ({
   color: "#616161",
@@ -14,6 +14,7 @@ const Placeholder = styled("span")(({ theme }) => ({
 const SORT: SortType[] = ["ASC", "DESC"];
 
 export default function Sort({ children }: PropsWithChildren) {
+  const sort = useSelector(recipeSelectors.getFilterSort);
   const dispatch = useDispatch();
   return (
     <Box
@@ -28,7 +29,7 @@ export default function Sort({ children }: PropsWithChildren) {
 
       <FormControl fullWidth>
         <Select
-          defaultValue={""}
+          value={sort}
           displayEmpty
           onChange={(event: SelectChangeEvent) => {
             dispatch(recipeActions.setSort(event.target.value as SortType));

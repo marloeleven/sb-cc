@@ -11,7 +11,7 @@ function AddRecipeButton() {
 
   return (
     <IconButton
-      onClick={() => router.push("/recipe/add")}
+      onClick={() => router.push("/recipe")}
       sx={{
         position: "absolute",
         top: 20,

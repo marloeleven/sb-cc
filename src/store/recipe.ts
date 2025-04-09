@@ -124,6 +124,18 @@ export const recipeSlice = createSlice({
       [selector.getRecipeList, (_state, id: Recipe["id"]) => id],
       (recipes, id) => recipes.find((recipe) => recipe.id === id)
     ),
+    getFilterSearch: createAppSelector(
+      [selector.getFilter],
+      (filter) => filter.search
+    ),
+    getFilterSort: createAppSelector(
+      [selector.getFilter],
+      (filter) => filter.sort
+    ),
+    getFilterFavorites: createAppSelector(
+      [selector.getFilter],
+      (filter) => filter.favorites
+    ),
   },
 });
 

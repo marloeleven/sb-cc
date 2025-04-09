@@ -1,4 +1,4 @@
-import { recipeActions } from "@/store/recipe";
+import { recipeActions, recipeSelectors } from "@/store/recipe";
 import { FilterFavorites } from "@/types";
 import {
   Box,
@@ -9,9 +9,10 @@ import {
   Typography,
 } from "@mui/material";
 import { PropsWithChildren } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export function Filter({ children }: PropsWithChildren) {
+  const favorites = useSelector(recipeSelectors.getFilterFavorites);
   const dispatch = useDispatch();
 
   const onChange =
@@ -55,11 +56,13 @@ export function Filter({ children }: PropsWithChildren) {
             control={<Checkbox name="yes" />}
             label="Yes"
             onChange={onChange("YES")}
+            checked={favorites.YES}
           />
           <FormControlLabel
             control={<Checkbox name="no" />}
             label="No"
             onChange={onChange("NO")}
+            checked={favorites.NO}
           />
         </FormGroup>
       </Paper>
