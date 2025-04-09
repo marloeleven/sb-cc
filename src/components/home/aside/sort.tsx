@@ -1,16 +1,20 @@
+import { recipeActions } from "@/store/recipe";
+import { SortType } from "@/types";
+import { ExpandMoreOutlined } from "@mui/icons-material";
 import { Box, FormControl, MenuItem, styled } from "@mui/material";
-import Select from "@mui/material/Select";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { PropsWithChildren } from "react";
+import { useDispatch } from "react-redux";
 
 const Placeholder = styled("span")(({ theme }) => ({
   color: "#616161",
   fontSize: 21,
 }));
 
-const SORT = ["ASC", "DESC"] as const;
-type TSort = (typeof SORT)[keyof typeof SORT];
+const SORT: SortType[] = ["ASC", "DESC"];
 
 export default function Sort({ children }: PropsWithChildren) {
+  const dispatch = useDispatch();
   return (
     <Box
       sx={{
@@ -26,19 +30,26 @@ export default function Sort({ children }: PropsWithChildren) {
         <Select
           defaultValue={""}
           displayEmpty
-          onChange={console.log}
+          onChange={(event: SelectChangeEvent) => {
+            dispatch(recipeActions.setSort(event.target.value as SortType));
+          }}
           slotProps={{
+            root: {
+              sx: {
+                borderRadius: 5,
+                border: "1px solid black",
+              },
+            },
             input: {
               sx: {
                 padding: "4px 24px",
                 fontSize: 21,
-                borderRadius: "5px",
-                border: "1px solid black",
                 fontWeight: 600,
+                backgroundColor: "#ffffff",
               },
             },
           }}
-          IconComponent="span"
+          IconComponent={ExpandMoreOutlined}
         >
           <MenuItem value="" sx={{ display: "none" }}>
             <Placeholder>Select</Placeholder>

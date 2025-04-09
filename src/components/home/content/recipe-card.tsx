@@ -1,4 +1,5 @@
 import { FlexBox } from "@/components/flexbox";
+import { recipeActions } from "@/store/recipe";
 import { Recipe } from "@/types";
 import { Star, StarBorderOutlined } from "@mui/icons-material";
 import {
@@ -10,7 +11,9 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 interface RecipeProps {
   recipe: Recipe;
@@ -26,11 +29,13 @@ function formatDateTime(date: Date) {
 
 interface RecipeImageProps extends Pick<Recipe, "image" | "title"> {
   isFavorite?: boolean;
+  toggleFavorite?: () => void;
 }
 function RecipeImage({
   image: src,
   title: alt,
   isFavorite = false,
+  toggleFavorite = () => {},
 }: RecipeImageProps) {
   const [isLoading, setIsLoading] = useState(true);
   return (
@@ -46,7 +51,6 @@ function RecipeImage({
         alt={alt}
         fill
         loading="lazy"
-        priority={false}
         style={{ objectFit: "cover", borderRadius: 15 }}
         unoptimized
         onLoad={() => setIsLoading(false)}
@@ -62,6 +66,7 @@ function RecipeImage({
             right: 5,
             color: "#FFFF00",
           }}
+          onClick={toggleFavorite}
         >
           {isFavorite ? (
             <Star fontSize="large" />
@@ -90,18 +95,42 @@ function RecipeImage({
 
 export function RecipeCard(props: RecipeProps) {
   const [isOverflow, setIsOverflow] = useState(false);
+  const [showOverflow, setShowOverflow] = useState(false);
+  const dispatch = useDispatch();
+
+  const router = useRouter();
+
+  const toggleFavorite = () => {
+    dispatch(recipeActions.toggleFavorite(props.recipe.id));
+  };
+
+  const onEdit = () => {
+    router.push(`/recipe/${props.recipe.id}`);
+  };
 
   return (
     <>
       <Paper
+        className="recipe-card"
         sx={{
           display: "flex",
           gap: 1,
           borderRadius: 5,
           boxShadow: 3,
+          maxHeight: 224,
+          cursor: "pointer",
+          "&:hover": {
+            boxShadow: 6,
+          },
         }}
+        onClick={onEdit}
       >
-        <RecipeImage image={props.recipe.image} title={props.recipe.title} />
+        <RecipeImage
+          image={props.recipe.image}
+          title={props.recipe.title}
+          isFavorite={props.recipe.isFavorite}
+          toggleFavorite={toggleFavorite}
+        />
         <FlexBox
           column
           sx={{
@@ -129,6 +158,7 @@ export function RecipeCard(props: RecipeProps) {
                 fontSize: 32,
                 fontWeight: 600,
                 lineHeight: 1.2,
+                whiteSpace: "nowrap",
               }}
             >
               {props.recipe.title}
@@ -141,7 +171,9 @@ export function RecipeCard(props: RecipeProps) {
                 WebkitLineClamp: 4,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
-                maxHeight: "90px",
+                pr: showOverflow ? 0.5 : 0,
+                maxHeight: showOverflow ? "110px" : "90px",
+                overflowY: showOverflow ? "auto" : "hidden",
               }}
               ref={(divEl) => {
                 if (divEl) {
@@ -152,7 +184,7 @@ export function RecipeCard(props: RecipeProps) {
               {props.recipe.description}
             </Typography>
 
-            {isOverflow && (
+            {isOverflow && !showOverflow && (
               <Button
                 variant="text"
                 sx={{
@@ -165,12 +197,17 @@ export function RecipeCard(props: RecipeProps) {
                   animation: "none",
                 }}
                 size="small"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setShowOverflow(true);
+                }}
               >
                 See more
               </Button>
             )}
           </FlexBox>
           <FlexBox
+            className="recipe-card-footer"
             sx={{
               display: "flex",
               gap: 2,
@@ -195,7 +232,7 @@ export function RecipeCard(props: RecipeProps) {
                 fontWeight: 600,
               }}
             >
-              Date: {formatDateTime(props.recipe.createdAt)}
+              Date: {formatDateTime(new Date(props.recipe.createdAt))}
             </Typography>
           </FlexBox>
         </FlexBox>

@@ -7,6 +7,7 @@ interface Props {
 export function ContentLayout({ aside, content }: Props) {
   return (
     <Container
+      component="main"
       sx={{
         display: "flex",
         justifyContent: "center",

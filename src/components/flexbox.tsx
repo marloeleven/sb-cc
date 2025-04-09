@@ -1,11 +1,11 @@
-import styled from "@emotion/styled";
-import { Box, BoxProps } from "@mui/material";
+import styled from '@emotion/styled';
+import { Box, BoxProps } from '@mui/material';
 interface FlexBoxProps extends BoxProps {
   column?: boolean;
-  sx?: BoxProps["sx"];
+  sx?: BoxProps['sx'];
 }
 
 export const FlexBox = styled(Box)<FlexBoxProps>((props) => ({
-  display: "flex",
-  flexDirection: props.column ? "column" : "row",
+  display: 'flex',
+  flexDirection: props.column ? 'column' : 'row',
 }));

@@ -1,17 +1,26 @@
+import type { Recipe } from "@/types";
+import { ContentLayout } from "../content-layout";
 import { FlexBox } from "../flexbox";
 
-export function Recipe() {
+export function Recipe({ recipe }: { recipe?: Recipe } = {}) {
   return (
-    <FlexBox
-      column
-      sx={{
-        gap: 3,
-        overflowY: "auto",
-        maxHeight: "70vh",
-        px: 1,
-      }}
-    >
-      Add your recipe content here
-    </FlexBox>
+    <ContentLayout
+      aside={<>Side</>}
+      content={
+        <FlexBox
+          column
+          sx={{
+            gap: 3,
+            overflowY: "auto",
+            maxHeight: "70vh",
+            px: 1,
+          }}
+        >
+          {recipe?.title}
+        </FlexBox>
+      }
+    />
   );
 }
+
+Recipe.withLayout = true;

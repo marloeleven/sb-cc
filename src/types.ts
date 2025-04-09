@@ -3,6 +3,10 @@ export interface Recipe {
   title: string;
   image: string;
   description: string;
-  createdAt: Date;
+  createdAt: string;
   author: string;
+  isFavorite: boolean;
 }
+
+export type SortType = "ASC" | "DESC";
+export type FilterFavorites = "ALL" | "NO" | "YES";
