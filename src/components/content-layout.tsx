@@ -13,7 +13,9 @@ export function ContentLayout({ aside, content }: Props) {
         justifyContent: "center",
         flexGrow: 1,
         height: "100%",
-        padding: 0,
+        padding: { xs: 0, md: 4 },
+        flexDirection: { xs: "column", md: "row" },
+        gap: { xs: 4, md: 0 },
       }}
     >
       <Container
@@ -21,7 +23,7 @@ export function ContentLayout({ aside, content }: Props) {
         sx={{
           maxWidth: {
             xs: "100%",
-            sm: 306,
+            md: 306,
           },
           display: "flex",
           flexDirection: "column",

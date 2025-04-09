@@ -12,8 +12,9 @@ export function Layout({ children, withSearchInput = false }: Props) {
       container
       sx={{
         flexDirection: "column",
+        flexWrap: "nowrap",
         height: "100vh",
-        px: { xs: 0, sm: 0 },
+        px: 0,
       }}
     >
       <Grid
@@ -33,7 +34,7 @@ export function Layout({ children, withSearchInput = false }: Props) {
         size={12}
         flex={1}
         sx={{
-          padding: "47px 55px",
+          padding: { sm: "10px", md: "10px 55px" },
         }}
       >
         {children}
