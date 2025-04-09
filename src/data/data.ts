@@ -19,7 +19,7 @@ export const testRecipes: Recipe[] = [
       "A popular Indian curry dish made with marinated chicken in a spiced tomato sauce.",
     createdAt: "2023-02-15",
     author: "Jane Smith",
-    isFavorite: false,
+    isFavorite: true,
   },
   {
     id: 3,
@@ -28,7 +28,7 @@ export const testRecipes: Recipe[] = [
     description: "A Russian dish of sautéed beef in a creamy mushroom sauce.",
     createdAt: "2023-03-10",
     author: "Alice Johnson",
-    isFavorite: false,
+    isFavorite: true,
   },
   {
     id: 4,
@@ -38,7 +38,7 @@ export const testRecipes: Recipe[] = [
       "A quick and healthy dish made with fresh vegetables and a savory sauce.",
     createdAt: "2023-04-05",
     author: "Bob Brown",
-    isFavorite: false,
+    isFavorite: true,
   },
   {
     id: 5,

@@ -7,15 +7,17 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
 export const getServerSideProps = (async () => {
-  const res = await api.get<Recipe[]>(`/`);
-  if (res.status !== 200) {
-    // throw new Error("Failed to fetch recipe data");
+  try {
+    const res = await api.get<Recipe[]>(`/`);
+
+    return { props: { recipes: res.data } };
+  } catch (error) {
+    console.error("Error fetching recipe data:", error);
+
     return {
       notFound: true,
     };
   }
-
-  return { props: { recipes: res.data } };
 }) satisfies GetServerSideProps<{
   recipes: Recipe[];
 }>;

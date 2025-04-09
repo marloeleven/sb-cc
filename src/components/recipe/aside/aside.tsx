@@ -1,3 +1,5 @@
+import { FlexBox } from "@/components/flexbox";
+import { ImageLoader } from "@/components/image-loader";
 import { ChevronLeft } from "@mui/icons-material";
 import { Container, Typography } from "@mui/material";
 import Link from "next/link";
@@ -34,6 +36,23 @@ export function Aside() {
           Back
         </Typography>
       </Link>
+
+      <FlexBox
+        col
+        sx={{
+          position: "relative",
+          minWidth: 310,
+          height: 224,
+        }}
+      >
+        <ImageLoader
+          src="/path/to/image.jpg"
+          alt="No Image"
+          fill
+          loading="lazy"
+          style={{ objectFit: "cover", borderRadius: 15 }}
+        />
+      </FlexBox>
     </Container>
   );
 }

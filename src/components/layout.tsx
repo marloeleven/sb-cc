@@ -34,7 +34,7 @@ export function Layout({ children, withSearchInput = false }: Props) {
         size={12}
         flex={1}
         sx={{
-          padding: { sm: "10px", md: "10px 55px" },
+          padding: "10px",
         }}
       >
         {children}

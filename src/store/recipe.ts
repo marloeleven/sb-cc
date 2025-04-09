@@ -36,9 +36,11 @@ export const recipeSlice = createSlice({
       state.recipes = payload;
     },
     addRecipe(state, { payload }: PayloadAction<Recipe>) {
+      // should be called by thunk response
       state.recipes.push(payload);
     },
     removeRecipe(state, { payload }: PayloadAction<Recipe["id"]>) {
+      // should be called by thunk response
       state.recipes = state.recipes.filter((recipe) => recipe.id !== payload);
     },
     updateRecipe(
@@ -47,6 +49,7 @@ export const recipeSlice = createSlice({
         payload: { id, ...data },
       }: PayloadAction<Pick<Recipe, "id"> & Partial<Recipe>>
     ) {
+      // should be called by thunk response
       state.recipes = state.recipes.map((recipe) => {
         if (recipe.id === id) {
           return { ...recipe, ...data };

@@ -1,16 +1,9 @@
 import { FlexBox } from "@/components/flexbox";
+import { ImageLoader } from "@/components/image-loader";
 import { recipeActions } from "@/store/recipe";
 import { Recipe } from "@/types";
 import { Star, StarBorderOutlined } from "@mui/icons-material";
-import {
-  Button,
-  Divider,
-  IconButton,
-  Paper,
-  Skeleton,
-  Typography,
-} from "@mui/material";
-import Image from "next/image";
+import { Button, Divider, IconButton, Paper, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -46,7 +39,7 @@ function RecipeImage({
         height: 224,
       }}
     >
-      <Image
+      <ImageLoader
         src={src}
         alt={alt}
         fill
@@ -73,20 +66,6 @@ function RecipeImage({
             <StarBorderOutlined fontSize="large" />
           )}
         </IconButton>
-      )}
-
-      {isLoading && (
-        <Skeleton
-          variant="rectangular"
-          sx={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            borderRadius: 5,
-          }}
-        />
       )}
     </FlexBox>
   );
@@ -133,7 +112,7 @@ export function RecipeCard(props: RecipeProps) {
           toggleFavorite={toggleFavorite}
         />
         <FlexBox
-          column
+          col
           sx={{
             color: "#000000",
             fontWeight: 600,
@@ -147,7 +126,7 @@ export function RecipeCard(props: RecipeProps) {
           }}
         >
           <FlexBox
-            column
+            col
             sx={{
               alignItems: "flex-start",
               gap: 0.5,

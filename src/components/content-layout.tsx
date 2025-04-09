@@ -13,7 +13,7 @@ export function ContentLayout({ aside, content }: Props) {
         justifyContent: "center",
         flexGrow: 1,
         height: "100%",
-        padding: { xs: 0, md: 4 },
+        py: { xs: 0, md: 4 },
         flexDirection: { xs: "column", md: "row" },
         gap: { xs: 4, md: 0 },
       }}

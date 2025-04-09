@@ -47,7 +47,7 @@ export function Content() {
     >
       <AddRecipeButton />
       <FlexBox
-        column
+        col
         sx={{
           gap: 3,
           overflowY: "auto",
@@ -62,7 +62,7 @@ export function Content() {
 
         {!recipes.length && (
           <FlexBox
-            column
+            col
             sx={{
               justifyContent: "center",
               alignItems: "center",

@@ -8,18 +8,22 @@ export const getServerSideProps = (async (context) => {
   const id = Number(params?.id) as Recipe["id"];
 
   if (!id) {
-    throw new Error("No recipe id provided");
-  }
-
-  const res = await api.get<Recipe>(`/${id}`);
-  if (res.status !== 200) {
-    // throw new Error("Failed to fetch recipe data");
     return {
       notFound: true,
     };
   }
 
-  return { props: { recipe: res.data } };
+  try {
+    const res = await api.get<Recipe>(`/${id}`);
+
+    return { props: { recipe: res.data } };
+  } catch (error) {
+    console.error("Error fetching recipe data:", error);
+
+    return {
+      notFound: true,
+    };
+  }
 }) satisfies GetServerSideProps<{
   recipe: Recipe;
 }>;
