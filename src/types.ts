@@ -4,7 +4,10 @@ export interface Recipe {
   image: string;
   description: string;
   createdAt: string;
-  author: string;
+  name: string;
+  email: string;
+  ingredients: string;
+  instructions: string;
   isFavorite: boolean;
 }
 

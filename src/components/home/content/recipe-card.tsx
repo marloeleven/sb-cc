@@ -203,7 +203,7 @@ export function RecipeCard(props: RecipeProps) {
                 fontWeight: 600,
               }}
             >
-              Added by: {props.recipe.author}
+              Added by: {props.recipe.name}
             </Typography>
             <Typography
               variant="body1"
