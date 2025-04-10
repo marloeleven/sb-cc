@@ -8,22 +8,15 @@ const inter = Inter({
   display: "swap",
 });
 
-const COLOR_CONFIG = {
-  PRIMARY: "#435490",
-  PRIMARY_HOVER: "#3b4a8c",
-  WHITE: "#ffffff",
-  BG: "#ebebeb",
-};
-
 const theme = createTheme({
   palette: {
     primary: {
       ...blue,
-      main: COLOR_CONFIG.PRIMARY,
+      main: "#435490",
     },
     background: {
-      default: COLOR_CONFIG.BG,
-      paper: COLOR_CONFIG.WHITE,
+      default: "#ebebeb",
+      paper: "#ffffff",
     },
   },
   defaultColorScheme: "light",
@@ -73,12 +66,12 @@ const theme = createTheme({
         },
       },
       styleOverrides: {
-        textPrimary: COLOR_CONFIG.WHITE,
+        textPrimary: "#ffffff",
         containedPrimary: {
-          backgroundColor: COLOR_CONFIG.PRIMARY,
-          color: COLOR_CONFIG.WHITE,
+          backgroundColor: "#435490",
+          color: "#ffffff",
           "&:hover": {
-            backgroundColor: COLOR_CONFIG.PRIMARY_HOVER,
+            backgroundColor: "#3b4a8c",
           },
         },
       },
