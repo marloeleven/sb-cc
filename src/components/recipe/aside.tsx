@@ -1,10 +1,10 @@
+import { RecipeFormData } from "@/store/recipe-actions";
 import type { Recipe } from "@/types";
 import { ChevronLeft } from "@mui/icons-material";
 import { Typography } from "@mui/material";
 import Link from "next/link";
 import { useState } from "react";
 import { Control, Controller, FieldErrors, FieldValues } from "react-hook-form";
-import type { RecipeFormData } from ".";
 import { FlexBox } from "../flexbox";
 import { ImageLoader } from "../image-loader";
 

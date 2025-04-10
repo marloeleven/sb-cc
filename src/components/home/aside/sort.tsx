@@ -7,16 +7,17 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { PropsWithChildren } from "react";
 import { useSelector } from "react-redux";
 
-const Placeholder = styled("span")(({ theme }) => ({
+const Placeholder = styled("span")({
   color: "#616161",
   fontSize: 21,
-}));
+});
 
 const SORT: SortType[] = ["ASC", "DESC"];
 
 export default function Sort({ children }: PropsWithChildren) {
   const sort = useSelector(recipeSelectors.getFilterSort);
   const dispatch = useAppDispatch();
+
   return (
     <Box
       sx={{

@@ -5,7 +5,11 @@ import { FlexBox } from "./flexbox";
 
 type ImageLoaderProps = ComponentProps<typeof Image>;
 
-export function ImageLoader({ alt, ...props }: ImageLoaderProps) {
+export function ImageLoader({
+  alt,
+  fetchPriority,
+  ...props
+}: ImageLoaderProps) {
   const [isLoading, setIsLoading] = useState(true);
   return (
     <FlexBox
@@ -17,7 +21,6 @@ export function ImageLoader({ alt, ...props }: ImageLoaderProps) {
     >
       <Image
         {...props}
-        priority={props.priority ?? false}
         alt={alt ?? "Recipe Image"}
         onLoad={(event) => {
           setIsLoading(false);
