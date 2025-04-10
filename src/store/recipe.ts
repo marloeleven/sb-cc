@@ -1,21 +1,30 @@
 import { FilterFavorites, Recipe, SortType } from "@/types";
+import { AlertColor } from "@mui/material";
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { createNewRecipe, getRecipes } from "./recipe-actions";
+import { extraReducers } from "./recipe-actions";
+
+export interface Notification {
+  id: number;
+  message: string;
+  type: AlertColor;
+  duration?: number;
+}
 
 export interface RootState {
   recipes: Recipe[];
+  notifications: Notification[];
   filter: {
     search: string;
     sort: SortType | "";
     favorites: Record<Exclude<FilterFavorites, "ALL">, boolean>;
   };
   status: "idle" | "loading" | "succeeded" | "failed";
-  error: string | null;
 }
 const createAppSelector = createSelector.withTypes<RootState>();
 
 const initialState: RootState = {
   recipes: [],
+  notifications: [],
   filter: {
     search: "",
     sort: "",
@@ -25,7 +34,6 @@ const initialState: RootState = {
     },
   },
   status: "idle",
-  error: null,
 };
 
 const selector = {
@@ -89,6 +97,18 @@ export const recipeSlice = createSlice({
     ) {
       state.filter.favorites[type] = checked;
     },
+    addNotification(
+      state,
+      { payload }: PayloadAction<Omit<Notification, "id">>
+    ) {
+      const id = Date.now();
+      state.notifications.push({ ...payload, id });
+    },
+    removeNotification(state, { payload }: PayloadAction<Notification["id"]>) {
+      state.notifications = state.notifications.filter(
+        (notification) => notification.id !== payload
+      );
+    },
   },
   selectors: {
     getRecipeList: createSelector(
@@ -144,32 +164,13 @@ export const recipeSlice = createSlice({
       [selector.getFilter],
       (filter) => filter.favorites
     ),
+    isLoading: createAppSelector(
+      (state: RootState) => state.status,
+      (status) => status === "loading"
+    ),
+    getNotifications: (state: RootState) => state.notifications,
   },
-  extraReducers: (builder) => {
-    builder
-      .addCase(createNewRecipe.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(createNewRecipe.rejected, (state, { payload }) => {
-        state.status = "failed";
-        state.error = payload as string;
-      })
-      .addCase(createNewRecipe.fulfilled, (state, { payload }) => {
-        if (payload) {
-          state.status = "succeeded";
-          state.recipes.push(payload);
-        }
-      });
-
-    builder
-      .addCase(getRecipes.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(getRecipes.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
-        state.recipes = payload;
-      });
-  },
+  extraReducers,
 });
 
 export const recipeActions = recipeSlice.actions;

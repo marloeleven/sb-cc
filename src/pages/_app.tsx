@@ -1,4 +1,5 @@
 import { Layout } from "@/components/layout";
+import { NotificationArea } from "@/components/snackbar";
 import { store } from "@/store";
 import "@/styles/globals.css";
 import { CssBaseline, ThemeProvider } from "@mui/material";
@@ -34,6 +35,7 @@ export default function App(props: AppPropsWithLayout) {
           ) : (
             <Component {...pageProps} />
           )}
+          <NotificationArea />
         </Provider>
       </ThemeProvider>
     </AppCacheProvider>

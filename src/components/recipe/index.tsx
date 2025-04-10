@@ -9,6 +9,7 @@ import {
   createNewRecipe,
   NewRecipe,
   RecipeFormData,
+  updateRecipe,
 } from "@/store/recipe-actions";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
@@ -56,11 +57,18 @@ export function RecipeForm({ recipe }: RecipeFormProps) {
   });
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     if (recipe?.id) {
+      const result = await dispatch(
+        updateRecipe({ ...recipe, ...data } as Recipe)
+      );
+
+      if (updateRecipe.fulfilled.match(result)) {
+        route.push("/");
+        return;
+      }
       return;
     }
-    console.log(data);
+
     const result = await dispatch(createNewRecipe(data as NewRecipe));
-    console.log("result", result);
 
     if (createNewRecipe.fulfilled.match(result)) {
       route.push("/");

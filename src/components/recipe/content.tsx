@@ -1,10 +1,12 @@
-import { recipeActions } from "@/store/recipe";
+import { AppDispatch } from "@/store";
+import { recipeSelectors } from "@/store/recipe";
+import { deleteRecipe } from "@/store/recipe-actions";
 import type { Recipe } from "@/types";
 import { Button, InputBase, InputBaseProps, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { forwardRef } from "react";
 import { Control, Controller, FieldErrors, FieldValues } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { RecipeFormData } from ".";
 import { FlexBox } from "../flexbox";
 
@@ -88,13 +90,16 @@ interface ContentProps {
 }
 
 export function Content({ recipe, errors, control }: ContentProps) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
+  const isLoading = useSelector(recipeSelectors.isLoading);
+
   const onDelete = () => {
-    dispatch(recipeActions.removeRecipe(recipe!.id));
+    dispatch(deleteRecipe(recipe!.id));
     router.push("/");
   };
+
   return (
     <FlexBox
       col
@@ -109,7 +114,6 @@ export function Content({ recipe, errors, control }: ContentProps) {
         render={({ field }) => (
           <TextInput
             label="Name"
-            readOnly={!!recipe?.id}
             {...field}
             errorMessage={errors[field.name]?.message}
           />
@@ -134,6 +138,7 @@ export function Content({ recipe, errors, control }: ContentProps) {
         render={({ field }) => (
           <TextInput
             label="Title"
+            readOnly={!!recipe?.id}
             {...field}
             errorMessage={errors[field.name]?.message}
           />
@@ -233,12 +238,12 @@ export function Content({ recipe, errors, control }: ContentProps) {
           color="primary"
           size="small"
           type="submit"
-          disabled={!!Object.values(errors).length}
+          disabled={!!Object.values(errors).length || isLoading}
           sx={{
             px: 5,
           }}
         >
-          Save
+          {isLoading ? "Saving..." : "Save"}
         </Button>
       </FlexBox>
     </FlexBox>

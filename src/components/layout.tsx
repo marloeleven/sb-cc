@@ -24,7 +24,7 @@ export function Layout({ children, withSearchInput = false }: Props) {
           padding: 1,
           justifyContent: "flex-end",
           display: "flex",
-          height: "96px",
+          minHeight: "96px",
           alignItems: "center",
         }}
       >

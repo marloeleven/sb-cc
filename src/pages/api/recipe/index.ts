@@ -10,13 +10,22 @@ interface ErrorMessage {
 }
 type Response = Recipe[] | Recipe | ErrorMessage;
 
-const uploadDir = path.join(process.cwd(), "public/images");
+export const uploadDir = path.join(process.cwd(), "public/images");
+export async function copyFile(filename: string, file: formidable.File) {
+  const buffer = await fs.readFile(file.filepath);
+  const dest = path.join(uploadDir, filename);
+  await fs.writeFile(dest, buffer);
+}
+export function getFilename(filename: string, file: formidable.File) {
+  const ext = path.extname(file.originalFilename!);
+  return `${filename}${ext}`;
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Response>
 ) {
   const tempData = await getTempData();
-
   if (req.method === "POST") {
     const form = formidable({
       keepExtensions: true,
@@ -37,13 +46,14 @@ export default async function handler(
       return res.status(400).json({ message: "Recipe already exists" });
     }
 
+    const filename = getFilename(title, files.image[0]);
     const file = files.image[0];
-    const buffer = await fs.readFile(file.filepath);
+    await copyFile(filename, file);
 
     const recipe: Recipe = {
       id: Date.now(),
       title,
-      image: `/images/${file.originalFilename}`,
+      image: `/images/${filename}`,
       description: fields.description![0],
       name: fields.name![0],
       email: fields.email![0],
@@ -56,9 +66,6 @@ export default async function handler(
     tempData.push(recipe);
 
     await saveTempData(tempData);
-
-    const dest = path.join(uploadDir, file.originalFilename!);
-    await fs.writeFile(dest, buffer);
 
     res.status(200).json(recipe);
 
