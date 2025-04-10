@@ -1,1 +1,1 @@
-export { Recipe as default } from "@/components/recipe";
+export { RecipeForm as default } from "@/components/recipe";

@@ -1,23 +1,17 @@
 import { Home } from "@/components/home";
-import { api } from "@/lib/api";
 import { recipeActions } from "@/store/recipe";
 import { Recipe } from "@/types";
 import { GetServerSideProps } from "next";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { TempData } from "./api/recipe";
 
 export const getServerSideProps = (async () => {
-  try {
-    const res = await api.get<Recipe[]>(`/`);
-
-    return { props: { recipes: res.data } };
-  } catch (error) {
-    console.error("Error fetching recipe data:", error);
-
-    return {
-      notFound: true,
-    };
-  }
+  return {
+    props: {
+      recipes: TempData,
+    },
+  };
 }) satisfies GetServerSideProps<{
   recipes: Recipe[];
 }>;

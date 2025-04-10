@@ -7,3 +7,5 @@ export const store = configureStore({
   preloadedState: { recipe: recipeSlice.getInitialState() },
   devTools: process.env.NODE_ENV !== "production",
 });
+
+export type AppDispatch = typeof store.dispatch;

@@ -6,7 +6,7 @@ interface ErrorMessage {
   message: string;
 }
 type Response = Recipe | ErrorMessage;
-export default function GET(
+export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Response>
 ) {

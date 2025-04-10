@@ -2,34 +2,47 @@ import { recipeActions } from "@/store/recipe";
 import type { Recipe } from "@/types";
 import { Button, InputBase, InputBaseProps, Typography } from "@mui/material";
 import { useRouter } from "next/router";
+import { forwardRef } from "react";
+import { Control, Controller, FieldErrors, FieldValues } from "react-hook-form";
 import { useDispatch } from "react-redux";
+import type { RecipeFormData } from ".";
 import { FlexBox } from "../flexbox";
 
+function capitalize(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 interface TextInputProps extends InputBaseProps {
   label: string;
+  errorMessage?: string;
 }
-function TextInput({
-  name,
-  label,
-  value,
-  placeholder = "Text field data",
-  readOnly = false,
-  sx,
-  ...props
-}: TextInputProps) {
+const TextInput = forwardRef(function TextInputBase(
+  {
+    name,
+    label,
+    value,
+    placeholder = "Text field data",
+    readOnly = false,
+    errorMessage,
+    sx,
+    ...props
+  }: TextInputProps,
+  ref
+) {
   return (
-    <FlexBox col sx={{ gap: 1 }}>
+    <FlexBox col sx={{ gap: 0 }}>
       <Typography
         variant="body2"
         color="textSecondary"
         sx={{
           fontSize: 20,
           color: "#000000",
+          pb: 1,
         }}
       >
         {label}
       </Typography>
       <InputBase
+        ref={ref}
         fullWidth
         type="text"
         name={name}
@@ -43,7 +56,7 @@ function TextInput({
             borderRadius: "4px",
             border: "1px solid #000000",
             padding: "10px",
-            maxWidth: "600px",
+            maxWidth: "750px",
             maxHeight: "300px",
           },
         }}
@@ -52,11 +65,29 @@ function TextInput({
           ...sx,
         }}
       />
+
+      <Typography
+        variant="body2"
+        color="error"
+        sx={{
+          fontSize: 14,
+          visibility: !!errorMessage ? "visible" : "hidden",
+          whiteSpace: "pre-wrap",
+        }}
+      >
+        {capitalize(errorMessage || " ")}
+      </Typography>
     </FlexBox>
   );
+});
+
+interface ContentProps {
+  recipe?: Recipe;
+  errors: FieldErrors<RecipeFormData>;
+  control: Control<RecipeFormData, any, FieldValues>;
 }
 
-export function Content({ recipe }: { recipe?: Recipe } = {}) {
+export function Content({ recipe, errors, control }: ContentProps) {
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -72,63 +103,107 @@ export function Content({ recipe }: { recipe?: Recipe } = {}) {
         gap: 2,
       }}
     >
-      <TextInput name="name" label="Name" value={recipe?.name} />
+      <Controller
+        name="name"
+        control={control}
+        render={({ field }) => (
+          <TextInput
+            label="Name"
+            readOnly={!!recipe?.id}
+            {...field}
+            errorMessage={errors[field.name]?.message}
+          />
+        )}
+      />
 
-      <TextInput name="email" label="Email Address" value={recipe?.email} />
+      <Controller
+        name="email"
+        control={control}
+        render={({ field }) => (
+          <TextInput
+            label="Email Address"
+            {...field}
+            errorMessage={errors[field.name]?.message}
+          />
+        )}
+      />
 
-      <TextInput
+      <Controller
         name="title"
-        label="Title"
-        value={recipe?.title}
-        readOnly={!!recipe?.title}
+        control={control}
+        render={({ field }) => (
+          <TextInput
+            label="Title"
+            {...field}
+            errorMessage={errors[field.name]?.message}
+          />
+        )}
       />
 
-      <TextInput
+      <Controller
         name="description"
-        label="Description"
-        value={recipe?.description}
-        placeholder="Description here"
-        multiline
-        rows={4}
-        slotProps={{
-          input: {
-            sx: {
-              resize: "both",
-            },
-          },
-        }}
+        control={control}
+        render={({ field }) => (
+          <TextInput
+            label="Description"
+            placeholder="Description here"
+            multiline
+            rows={4}
+            slotProps={{
+              input: {
+                sx: {
+                  resize: "both",
+                },
+              },
+            }}
+            {...field}
+            errorMessage={errors[field.name]?.message}
+          />
+        )}
       />
 
-      <TextInput
+      <Controller
         name="ingredients"
-        label="Ingredients"
-        value={recipe?.ingredients}
-        placeholder="Description here"
-        multiline
-        rows={4}
-        slotProps={{
-          input: {
-            sx: {
-              resize: "both",
-            },
-          },
-        }}
+        control={control}
+        render={({ field }) => (
+          <TextInput
+            label="Ingredients"
+            placeholder="Description here"
+            multiline
+            rows={4}
+            slotProps={{
+              input: {
+                sx: {
+                  resize: "both",
+                },
+              },
+            }}
+            {...field}
+            errorMessage={errors[field.name]?.message}
+          />
+        )}
       />
 
-      <TextInput
+      <Controller
         name="instructions"
-        label="Instructions"
-        value={recipe?.instructions}
-        placeholder="Description here"
-        multiline
-        rows={4}
-        slotProps={{
-          input: {
-            sx: {
-              resize: "both",
-            },
-          },
-        }}
+        control={control}
+        render={({ field }) => (
+          <TextInput
+            label="Instructions"
+            placeholder="Description here"
+            multiline
+            rows={4}
+            slotProps={{
+              input: {
+                sx: {
+                  resize: "both",
+                },
+              },
+            }}
+            {...field}
+            errorMessage={errors[field.name]?.message}
+          />
+        )}
       />
 
       <FlexBox
@@ -158,6 +233,7 @@ export function Content({ recipe }: { recipe?: Recipe } = {}) {
           color="primary"
           size="small"
           type="submit"
+          disabled={!!Object.values(errors).length}
           sx={{
             px: 5,
           }}

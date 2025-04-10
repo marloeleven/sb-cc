@@ -3,12 +3,12 @@ export interface Recipe {
   title: string;
   image: string;
   description: string;
-  createdAt: string;
   name: string;
   email: string;
   ingredients: string;
   instructions: string;
   isFavorite: boolean;
+  createdAt: string;
 }
 
 export type SortType = "ASC" | "DESC";

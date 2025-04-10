@@ -1,4 +1,4 @@
-import { Recipe as RecipeComponent } from "@/components/recipe";
+import { RecipeForm as RecipeComponent } from "@/components/recipe";
 import { api } from "@/lib/api";
 import { Recipe } from "@/types";
 import { GetServerSideProps } from "next";

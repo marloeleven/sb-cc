@@ -1,5 +1,6 @@
 import { FilterFavorites, Recipe, SortType } from "@/types";
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createNewRecipe } from "./recipe-actions";
 
 export interface RootState {
   recipes: Recipe[];
@@ -8,6 +9,8 @@ export interface RootState {
     sort: SortType | "";
     favorites: Record<Exclude<FilterFavorites, "ALL">, boolean>;
   };
+  status: "idle" | "loading" | "succeeded" | "failed";
+  error: string | null;
 }
 const createAppSelector = createSelector.withTypes<RootState>();
 
@@ -21,6 +24,8 @@ const initialState: RootState = {
       NO: false,
     },
   },
+  status: "idle",
+  error: null,
 };
 
 const selector = {
@@ -139,6 +144,22 @@ export const recipeSlice = createSlice({
       [selector.getFilter],
       (filter) => filter.favorites
     ),
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(createNewRecipe.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(createNewRecipe.rejected, (state, { payload }) => {
+        state.status = "failed";
+        state.error = payload as string;
+      })
+      .addCase(createNewRecipe.fulfilled, (state, { payload }) => {
+        if (payload) {
+          state.status = "succeeded";
+          state.recipes.push(payload);
+        }
+      });
   },
 });
 

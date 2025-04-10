@@ -1,9 +1,73 @@
 import type { Recipe } from "@/types";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Container } from "@mui/material";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import * as yup from "yup";
+
+import { AppDispatch } from "@/store";
+import {
+  createNewRecipe,
+  NewRecipe,
+  RecipeFormData,
+} from "@/store/recipe-actions";
+import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
 import { Aside } from "./aside";
 import { Content } from "./content";
 
-export function Recipe({ recipe }: { recipe?: Recipe } = {}) {
+const strictEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const schema = yup
+  .object({
+    name: yup.string().required(),
+    email: yup
+      .string()
+      .matches(strictEmailRegex, "Email is not valid")
+      .required(),
+    title: yup.string().required(),
+    description: yup.string().required(),
+    ingredients: yup.string().required(),
+    instructions: yup.string().required(),
+    image: yup.mixed().required("An image file is required"),
+  })
+  .required();
+
+interface RecipeFormProps {
+  recipe?: Recipe;
+}
+export function RecipeForm({ recipe }: RecipeFormProps) {
+  const dispatch = useDispatch<AppDispatch>();
+  const route = useRouter();
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<RecipeFormData>({
+    defaultValues: {
+      name: recipe?.name || "",
+      email: recipe?.email || "",
+      title: recipe?.title || "",
+      description: recipe?.description || "",
+      ingredients: recipe?.ingredients || "",
+      instructions: recipe?.instructions || "",
+      image: recipe?.image || "",
+    },
+    // @ts-ignore - ignore mixed type error for now
+    resolver: yupResolver(schema),
+  });
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    if (recipe?.id) {
+      return;
+    }
+    console.log(data);
+    const result = await dispatch(createNewRecipe(data as NewRecipe));
+    console.log("result", result);
+
+    if (createNewRecipe.fulfilled.match(result)) {
+      route.push("/");
+      return;
+    }
+  };
+
   return (
     <Container
       component="form"
@@ -16,12 +80,13 @@ export function Recipe({ recipe }: { recipe?: Recipe } = {}) {
         flexDirection: { xs: "column", md: "row" },
         gap: { xs: 4, md: 4 },
       }}
+      onSubmit={handleSubmit(onSubmit)}
     >
-      <Aside recipe={recipe} />
+      <Aside recipe={recipe} errors={errors} control={control} />
 
-      <Content recipe={recipe} />
+      <Content recipe={recipe} errors={errors} control={control} />
     </Container>
   );
 }
 
-Recipe.withLayout = true;
+RecipeForm.withLayout = true;
