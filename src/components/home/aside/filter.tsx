@@ -1,3 +1,4 @@
+import { useAppDispatch } from "@/store";
 import { recipeActions, recipeSelectors } from "@/store/recipe";
 import { FilterFavorites } from "@/types";
 import {
@@ -9,11 +10,11 @@ import {
   Typography,
 } from "@mui/material";
 import { PropsWithChildren } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 export function Filter({ children }: PropsWithChildren) {
   const favorites = useSelector(recipeSelectors.getFilterFavorites);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const onChange =
     (value: Exclude<FilterFavorites, "ALL">) =>

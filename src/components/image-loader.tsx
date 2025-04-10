@@ -17,6 +17,7 @@ export function ImageLoader({ alt, ...props }: ImageLoaderProps) {
     >
       <Image
         {...props}
+        priority={props.priority ?? false}
         alt={alt ?? "Recipe Image"}
         onLoad={(event) => {
           setIsLoading(false);

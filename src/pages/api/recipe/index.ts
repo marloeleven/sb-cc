@@ -18,7 +18,7 @@ export async function copyFile(filename: string, file: formidable.File) {
 }
 export function getFilename(filename: string, file: formidable.File) {
   const ext = path.extname(file.originalFilename!);
-  return `${filename}${ext}`;
+  return `${filename}${ext}`.toLowerCase();
 }
 
 export default async function handler(
@@ -42,8 +42,12 @@ export default async function handler(
     }
 
     const title = fields.title![0];
-    if (tempData.find((recipe) => recipe.title === title)) {
-      return res.status(400).json({ message: "Recipe already exists" });
+    if (
+      tempData.find(
+        (recipe) => recipe.title.toLowerCase() === title.toLowerCase()
+      )
+    ) {
+      return res.status(409).json({ message: "Recipe already exists" });
     }
 
     const filename = getFilename(title, files.image[0]);

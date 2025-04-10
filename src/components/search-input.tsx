@@ -1,8 +1,9 @@
+import { useAppDispatch } from "@/store";
 import { recipeActions, recipeSelectors } from "@/store/recipe";
 import { Search } from "@mui/icons-material";
 import { InputAdornment, TextField } from "@mui/material";
 import { useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 const debounce = (func: Function, delay: number) => {
   let timeoutId: NodeJS.Timeout;
@@ -18,7 +19,7 @@ const debounce = (func: Function, delay: number) => {
 
 export function SearchInput() {
   const searchValue = useSelector(recipeSelectors.getFilterSearch);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const onChange = useCallback(
     debounce((event: React.ChangeEvent<HTMLInputElement>) => {

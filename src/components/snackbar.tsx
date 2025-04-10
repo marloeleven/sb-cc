@@ -1,11 +1,12 @@
+import { useAppDispatch } from "@/store";
 import { Notification, recipeActions, recipeSelectors } from "@/store/recipe";
 import { Alert } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 export function NotificationArea() {
   const notifications = useSelector(recipeSelectors.getNotifications);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const onClose = (id: Notification["id"]) => () => {
     dispatch(recipeActions.removeNotification(id));

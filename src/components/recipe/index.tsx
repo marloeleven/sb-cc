@@ -4,7 +4,7 @@ import { Container } from "@mui/material";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 
-import { AppDispatch } from "@/store";
+import { useAppDispatch } from "@/store";
 import {
   createNewRecipe,
   NewRecipe,
@@ -12,23 +12,27 @@ import {
   updateRecipe,
 } from "@/store/recipe-actions";
 import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
 import { Aside } from "./aside";
 import { Content } from "./content";
 
+const trim = (value: string) => value.trim();
 const strictEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const schema = yup
   .object({
-    name: yup.string().required(),
+    name: yup.string().transform(trim).required(),
     email: yup
       .string()
       .matches(strictEmailRegex, "Email is not valid")
+      .transform(trim)
       .required(),
-    title: yup.string().required(),
-    description: yup.string().required(),
-    ingredients: yup.string().required(),
-    instructions: yup.string().required(),
-    image: yup.mixed().required("An image file is required"),
+    title: yup.string().transform(trim).required(),
+    description: yup.string().transform(trim).required(),
+    ingredients: yup.string().transform(trim).required(),
+    instructions: yup.string().transform(trim).required(),
+    image: yup
+      .mixed()
+      .test("value", "An image file is required", (value) => !!value)
+      .required("An image file is required"),
   })
   .required();
 
@@ -36,7 +40,7 @@ interface RecipeFormProps {
   recipe?: Recipe;
 }
 export function RecipeForm({ recipe }: RecipeFormProps) {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const route = useRouter();
   const {
     handleSubmit,

@@ -1,4 +1,4 @@
-import { AppDispatch } from "@/store";
+import { useAppDispatch } from "@/store";
 import { recipeSelectors } from "@/store/recipe";
 import { deleteRecipe } from "@/store/recipe-actions";
 import type { Recipe } from "@/types";
@@ -6,7 +6,7 @@ import { Button, InputBase, InputBaseProps, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { forwardRef } from "react";
 import { Control, Controller, FieldErrors, FieldValues } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import type { RecipeFormData } from ".";
 import { FlexBox } from "../flexbox";
 
@@ -90,7 +90,7 @@ interface ContentProps {
 }
 
 export function Content({ recipe, errors, control }: ContentProps) {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
   const isLoading = useSelector(recipeSelectors.isLoading);

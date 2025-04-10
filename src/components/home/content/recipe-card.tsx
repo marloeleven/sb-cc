@@ -1,12 +1,12 @@
 import { FlexBox } from "@/components/flexbox";
 import { ImageLoader } from "@/components/image-loader";
-import { recipeActions } from "@/store/recipe";
+import { useAppDispatch } from "@/store";
+import { updateRecipe } from "@/store/recipe-actions";
 import { Recipe } from "@/types";
 import { Star, StarBorderOutlined } from "@mui/icons-material";
 import { Button, Divider, IconButton, Paper, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
 
 interface RecipeProps {
   recipe: Recipe;
@@ -74,14 +74,16 @@ function RecipeImage({
 export function RecipeCard(props: RecipeProps) {
   const [isOverflow, setIsOverflow] = useState(false);
   const [showOverflow, setShowOverflow] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const router = useRouter();
 
-  const toggleFavorite = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const toggleFavorite = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
 
-    dispatch(recipeActions.toggleFavorite(props.recipe.id));
+    await dispatch(
+      updateRecipe({ ...props.recipe, isFavorite: !props.recipe.isFavorite })
+    );
   };
 
   const onEdit = () => {

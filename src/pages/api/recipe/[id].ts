@@ -65,6 +65,7 @@ export default async function handler(
         email: fields.email![0],
         ingredients: fields.ingredients![0],
         instructions: fields.instructions![0],
+        isFavorite: Boolean(fields.isFavorite![0] === "true"),
       });
 
       await saveTempData(tempData);

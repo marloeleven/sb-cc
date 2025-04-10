@@ -100,7 +100,7 @@ export const extraReducers = (builder: ActionReducerMapBuilder<RootState>) => {
 
       state.notifications.push({
         id: Date.now(),
-        message: "Failed to create recipe",
+        message: payload as string,
         type: "error",
         duration: 3000,
       });
@@ -136,7 +136,13 @@ export const extraReducers = (builder: ActionReducerMapBuilder<RootState>) => {
     .addCase(updateRecipe.fulfilled, (state, { payload }) => {
       if (payload) {
         state.status = "succeeded";
-        state.recipes.push(payload);
+        state.recipes = state.recipes.map((recipe) => {
+          if (recipe.id === payload.id) {
+            return { ...recipe, ...payload };
+          }
+
+          return recipe;
+        });
 
         state.notifications.push({
           id: Date.now(),
