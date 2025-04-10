@@ -1,4 +1,4 @@
-import { testRecipes } from "@/data/data";
+import { getTempData, saveTempData } from "@/lib/temp-data";
 import { Recipe } from "@/types";
 import formidable from "formidable";
 import fs from "fs/promises";
@@ -10,13 +10,13 @@ interface ErrorMessage {
 }
 type Response = Recipe[] | Recipe | ErrorMessage;
 
-export const TempData = testRecipes;
-
 const uploadDir = path.join(process.cwd(), "public/images");
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Response>
 ) {
+  const tempData = await getTempData();
+
   if (req.method === "POST") {
     const form = formidable({
       keepExtensions: true,
@@ -33,7 +33,7 @@ export default async function handler(
     }
 
     const title = fields.title![0];
-    if (TempData.find((recipe) => recipe.title === title)) {
+    if (tempData.find((recipe) => recipe.title === title)) {
       return res.status(400).json({ message: "Recipe already exists" });
     }
 
@@ -53,7 +53,9 @@ export default async function handler(
       createdAt: new Date().toISOString(),
     };
 
-    TempData.push(recipe);
+    tempData.push(recipe);
+
+    await saveTempData(tempData);
 
     const dest = path.join(uploadDir, file.originalFilename!);
     await fs.writeFile(dest, buffer);
@@ -63,7 +65,7 @@ export default async function handler(
     return;
   }
 
-  return res.status(200).json(TempData);
+  return res.status(200).json(tempData);
 }
 
 export const config = {

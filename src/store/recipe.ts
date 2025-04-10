@@ -1,6 +1,6 @@
 import { FilterFavorites, Recipe, SortType } from "@/types";
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { createNewRecipe } from "./recipe-actions";
+import { createNewRecipe, getRecipes } from "./recipe-actions";
 
 export interface RootState {
   recipes: Recipe[];
@@ -159,6 +159,15 @@ export const recipeSlice = createSlice({
           state.status = "succeeded";
           state.recipes.push(payload);
         }
+      });
+
+    builder
+      .addCase(getRecipes.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(getRecipes.fulfilled, (state, { payload }) => {
+        state.status = "succeeded";
+        state.recipes = payload;
       });
   },
 });

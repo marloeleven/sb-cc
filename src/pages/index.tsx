@@ -1,27 +1,15 @@
 import { Home } from "@/components/home";
-import { recipeActions } from "@/store/recipe";
-import { Recipe } from "@/types";
-import { GetServerSideProps } from "next";
+import { AppDispatch } from "@/store";
+import { getRecipes } from "@/store/recipe-actions";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { TempData } from "./api/recipe";
 
-export const getServerSideProps = (async () => {
-  return {
-    props: {
-      recipes: TempData,
-    },
-  };
-}) satisfies GetServerSideProps<{
-  recipes: Recipe[];
-}>;
-
-export default function HomePage({ recipes }: { recipes: Recipe[] }) {
-  const dispatch = useDispatch();
+export default function HomePage() {
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    dispatch(recipeActions.setRecipes(recipes));
-  }, [dispatch, recipes]);
+    dispatch(getRecipes());
+  }, [dispatch]);
 
   return <Home />;
 }

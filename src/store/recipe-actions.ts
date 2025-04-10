@@ -35,7 +35,7 @@ export const createNewRecipe = createAsyncThunk<Recipe, NewRecipe>(
   }
 );
 
-export const getRecipes = createAsyncThunk(
+export const getRecipes = createAsyncThunk<Recipe[]>(
   "recipe/getRecipes",
   async (_, { rejectWithValue }) => {
     try {
