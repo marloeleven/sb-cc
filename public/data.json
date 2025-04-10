@@ -74,7 +74,7 @@
   {
     "id": 7,
     "title": "Pad Thai",
-    "image": "/images/winter-1.jpg",
+    "image": "/images/recipe.jpg",
     "description": "A popular Thai noodle dish with shrimp, tofu, peanuts, and tamarind sauce.",
     "createdAt": "2023-07-10",
     "name": "Evan Black",
@@ -96,27 +96,27 @@
     "isFavorite": false
   },
   {
+    "id": 9,
+    "title": "Grilled Salmon",
+    "image": "/images/recipe.jpg",
+    "description": "A healthy and flavorful dish with grilled salmon and lemon butter sauce.",
+    "createdAt": "2023-09-05",
+    "name": "George Red",
+    "email": "george.red@example.com",
+    "ingredients": "Salmon fillets, Lemon, Butter, Garlic, Parsley",
+    "instructions": "Grill the salmon. Prepare a lemon butter sauce with garlic and parsley. Serve the salmon with the sauce.",
+    "isFavorite": false
+  },
+  {
     "id": 10,
     "title": "Tacos al Pastor",
-    "image": "/images/heart-1.jpg",
+    "image": "/images/recipe.jpg",
     "description": "Mexican tacos made with marinated pork, pineapple, and fresh cilantro.",
     "createdAt": "2023-10-01",
-    "name": "Hannah Yellow 3",
+    "name": "Hannah Yellow",
     "email": "hannah.yellow@example.com",
     "ingredients": "Pork, Pineapple, Cilantro, Corn tortillas, Spices",
     "instructions": "Marinate the pork with spices. Cook the pork and pineapple. Serve in tortillas with cilantro.",
     "isFavorite": false
-  },
-  {
-    "id": 1744274505018,
-    "title": "Sample",
-    "image": "/images/dog-1.jpg",
-    "description": "test hihi",
-    "name": "Marlo 2",
-    "email": "marlodelatorre11@gmail.com",
-    "ingredients": "test",
-    "instructions": "qweqwe",
-    "isFavorite": false,
-    "createdAt": "2025-04-10T08:41:45.018Z"
   }
 ]

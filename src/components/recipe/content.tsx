@@ -24,7 +24,6 @@ const TextInput = forwardRef(function TextInputBase(
     placeholder = "Text field data",
     readOnly = false,
     errorMessage,
-    sx,
     ...props
   }: TextInputProps,
   ref
@@ -62,9 +61,6 @@ const TextInput = forwardRef(function TextInputBase(
           },
         }}
         {...props}
-        sx={{
-          ...sx,
-        }}
       />
 
       <Typography
