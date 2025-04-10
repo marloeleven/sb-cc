@@ -45,32 +45,6 @@ export const recipeSlice = createSlice({
   name: "recipe",
   initialState,
   reducers: {
-    setRecipes(state, { payload }: PayloadAction<Recipe[]>) {
-      state.recipes = payload;
-    },
-    addRecipe(state, { payload }: PayloadAction<Recipe>) {
-      // should be called by thunk response
-      state.recipes.push(payload);
-    },
-    removeRecipe(state, { payload }: PayloadAction<Recipe["id"]>) {
-      // should be called by thunk response
-      state.recipes = state.recipes.filter((recipe) => recipe.id !== payload);
-    },
-    updateRecipe(
-      state,
-      {
-        payload: { id, ...data },
-      }: PayloadAction<Pick<Recipe, "id"> & Partial<Recipe>>
-    ) {
-      // should be called by thunk response
-      state.recipes = state.recipes.map((recipe) => {
-        if (recipe.id === id) {
-          return { ...recipe, ...data };
-        }
-
-        return recipe;
-      });
-    },
     setSearch(state, { payload }: PayloadAction<string>) {
       state.filter.search = payload;
     },
@@ -96,13 +70,6 @@ export const recipeSlice = createSlice({
       }>
     ) {
       state.filter.favorites[type] = checked;
-    },
-    addNotification(
-      state,
-      { payload }: PayloadAction<Omit<Notification, "id">>
-    ) {
-      const id = Date.now();
-      state.notifications.push({ ...payload, id });
     },
     removeNotification(state, { payload }: PayloadAction<Notification["id"]>) {
       state.notifications = state.notifications.filter(
@@ -147,10 +114,6 @@ export const recipeSlice = createSlice({
 
         return filterResult;
       }
-    ),
-    getRecipeById: createAppSelector(
-      [selector.getRecipeList, (_state, id: Recipe["id"]) => id],
-      (recipes, id) => recipes.find((recipe) => recipe.id === id)
     ),
     getFilterSearch: createAppSelector(
       [selector.getFilter],
