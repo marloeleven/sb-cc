@@ -54,7 +54,7 @@ export default async function handler(
       if (file) {
         const filename = getFilename(title, file);
         await copyFile(filename, file);
-        image = `/images/${filename}`;
+        image = `/images/${filename}?t=${Date.now()}`;
       }
 
       Object.assign(recipe, {
