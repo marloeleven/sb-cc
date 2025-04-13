@@ -1,22 +1,28 @@
 import { RecipeForm as RecipeComponent } from "@/components/recipe";
-import { RootState } from "@/store";
-import { connect } from "react-redux";
+import { recipeSelectors } from "@/store/recipe";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
-const mapStateToProps = (state: RootState, props: { id: number }) => {
-  const recipe = state.recipe.recipes.find((recipe) => recipe.id === props.id);
-  return {
-    recipe,
-  };
-};
+export default function RecipePage() {
+  const recipes = useSelector(recipeSelectors.getRecipeList);
 
-const EnhancedRecipeComponent = connect(mapStateToProps)(RecipeComponent);
-export default function RecipePage({ id }: { id: number }) {
-  return <EnhancedRecipeComponent id={id} />;
+  const router = useRouter();
+  const { id } = router.query;
+
+  const recipe = recipes.find((recipe) => recipe.id === Number(id));
+
+  useEffect(() => {
+    if (!recipe) {
+      router.push("/404");
+    }
+  }, [recipe, router]);
+
+  if (!recipe) {
+    return null;
+  }
+
+  return <RecipeComponent recipe={recipe} />;
 }
-
-RecipePage.getInitialProps = async (ctx: { query: { id: string } }) => {
-  const { id } = ctx.query;
-  return { id: Number(id) };
-};
 
 RecipePage.withLayout = true;
