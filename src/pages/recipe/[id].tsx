@@ -1,33 +1,22 @@
 import { RecipeForm as RecipeComponent } from "@/components/recipe";
-import { api } from "@/lib/api";
-import { Recipe } from "@/types";
-import { GetServerSideProps } from "next";
+import { RootState } from "@/store";
+import { connect } from "react-redux";
 
-export const getServerSideProps = (async (context) => {
-  const { params } = context;
-  const id = Number(params?.id) as Recipe["id"];
+const mapStateToProps = (state: RootState, props: { id: number }) => {
+  const recipe = state.recipe.recipes.find((recipe) => recipe.id === props.id);
+  return {
+    recipe,
+  };
+};
 
-  if (!id) {
-    return {
-      notFound: true,
-    };
-  }
+const EnhancedRecipeComponent = connect(mapStateToProps)(RecipeComponent);
+export default function RecipePage({ id }: { id: number }) {
+  return <EnhancedRecipeComponent id={id} />;
+}
 
-  try {
-    const res = await api.get<Recipe>(`/${id}`);
+RecipePage.getInitialProps = async (ctx: { query: { id: string } }) => {
+  const { id } = ctx.query;
+  return { id: Number(id) };
+};
 
-    return { props: { recipe: res.data } };
-  } catch (error) {
-    console.error("Error fetching recipe data:", error);
-
-    return {
-      notFound: true,
-    };
-  }
-}) satisfies GetServerSideProps<{
-  recipe: Recipe;
-}>;
-
-export default RecipeComponent;
-
-RecipeComponent.withLayout = true;
+RecipePage.withLayout = true;
