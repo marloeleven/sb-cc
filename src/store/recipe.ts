@@ -10,7 +10,7 @@ export interface Notification {
   duration?: number;
 }
 
-export interface RootState {
+export interface RecipeState {
   recipes: Recipe[];
   notifications: Notification[];
   filter: {
@@ -18,11 +18,11 @@ export interface RootState {
     sort: SortType | "";
     favorites: Record<Exclude<FilterFavorites, "ALL">, boolean>;
   };
-  status: "idle" | "loading" | "succeeded" | "failed";
+  status: "idle" | "loading" | "failed";
 }
-const createAppSelector = createSelector.withTypes<RootState>();
+const createAppSelector = createSelector.withTypes<RecipeState>();
 
-const initialState: RootState = {
+const initialState: RecipeState = {
   recipes: [],
   notifications: [],
   filter: {
@@ -37,14 +37,33 @@ const initialState: RootState = {
 };
 
 const selector = {
-  getRecipeList: (state: RootState) => state.recipes,
-  getFilter: (state: RootState) => state.filter,
+  getRecipeList: (state: RecipeState) => state.recipes,
+  getFilter: (state: RecipeState) => state.filter,
 };
 
 export const recipeSlice = createSlice({
   name: "recipe",
   initialState,
   reducers: {
+    addRecipe(state, { payload }: PayloadAction<Recipe>) {
+      state.recipes.push(payload);
+    },
+    removeRecipe(state, { payload }: PayloadAction<Recipe["id"]>) {
+      state.recipes = state.recipes.filter((recipe) => recipe.id !== payload);
+    },
+    updateRecipe(state, { payload }: PayloadAction<Recipe>) {
+      state.recipes = state.recipes.map((recipe) => {
+        if (recipe.id === payload.id) {
+          return { ...recipe, ...payload };
+        }
+
+        return recipe;
+      });
+    },
+    setRecipes(state, { payload }: PayloadAction<Recipe[]>) {
+      state.recipes = payload;
+      state.status = "idle";
+    },
     setSearch(state, { payload }: PayloadAction<string>) {
       state.filter.search = payload;
     },
@@ -128,10 +147,10 @@ export const recipeSlice = createSlice({
       (filter) => filter.favorites
     ),
     isLoading: createAppSelector(
-      (state: RootState) => state.status,
+      (state: RecipeState) => state.status,
       (status) => status === "loading"
     ),
-    getNotifications: (state: RootState) => state.notifications,
+    getNotifications: (state: RecipeState) => state.notifications,
   },
   extraReducers,
 });

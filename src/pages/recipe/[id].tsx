@@ -28,8 +28,6 @@ export const getServerSideProps = (async (context) => {
   recipe: Recipe;
 }>;
 
-export default function EditRecipePage({ recipe }: { recipe: Recipe }) {
-  return <RecipeComponent recipe={recipe} />;
-}
+export default RecipeComponent;
 
-EditRecipePage.withLayout = true;
+RecipeComponent.withLayout = true;

@@ -1,8 +1,12 @@
 import { api } from "@/lib/api";
 import { Recipe } from "@/types";
-import { ActionReducerMapBuilder, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  ActionReducerMapBuilder,
+  createAsyncThunk,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
-import { RootState } from "./recipe";
+import { recipeActions, RecipeState } from "./recipe";
 
 export type RecipeFormData = Omit<Recipe, "id" | "createdAt" | "isFavorite">;
 
@@ -10,9 +14,13 @@ export type NewRecipe = RecipeFormData & {
   image: File;
 };
 
-export const createNewRecipe = createAsyncThunk<Recipe, NewRecipe>(
+type RejectType = {
+  rejectValue: string;
+};
+
+export const createNewRecipe = createAsyncThunk<string, NewRecipe, RejectType>(
   "recipe/createRecipe",
-  async (recipe: NewRecipe, { rejectWithValue }) => {
+  async (recipe: NewRecipe, { dispatch, rejectWithValue }) => {
     try {
       const formData = new FormData();
 
@@ -26,7 +34,9 @@ export const createNewRecipe = createAsyncThunk<Recipe, NewRecipe>(
         },
       });
 
-      return response.data;
+      dispatch(recipeActions.addRecipe(response.data));
+
+      return "Recipe added successfully";
     } catch (error: unknown) {
       console.error(error);
       return rejectWithValue(
@@ -38,9 +48,9 @@ export const createNewRecipe = createAsyncThunk<Recipe, NewRecipe>(
   }
 );
 
-export const updateRecipe = createAsyncThunk<Recipe, Recipe>(
+export const updateRecipe = createAsyncThunk<string, Recipe, RejectType>(
   "recipe/updateRecipe",
-  async (recipe: Recipe, { rejectWithValue }) => {
+  async (recipe: Recipe, { dispatch, rejectWithValue }) => {
     try {
       const formData = new FormData();
 
@@ -54,7 +64,9 @@ export const updateRecipe = createAsyncThunk<Recipe, Recipe>(
         },
       });
 
-      return response.data;
+      dispatch(recipeActions.updateRecipe(response.data));
+
+      return "Recipe updated successfully";
     } catch (error) {
       console.error(error);
       return rejectWithValue("Failed to update recipe");
@@ -62,13 +74,15 @@ export const updateRecipe = createAsyncThunk<Recipe, Recipe>(
   }
 );
 
-export const deleteRecipe = createAsyncThunk<Recipe["id"], Recipe["id"]>(
+export const deleteRecipe = createAsyncThunk<string, Recipe["id"], RejectType>(
   "recipe/deleteRecipe",
-  async (recipeId, { rejectWithValue }) => {
+  async (recipeId, { dispatch, rejectWithValue }) => {
     try {
       await api.delete(`/${recipeId}`);
 
-      return recipeId;
+      dispatch(recipeActions.removeRecipe(recipeId));
+
+      return "Recipe deleted successfully";
     } catch (error) {
       console.error(error);
       return rejectWithValue("Failed to delete recipe");
@@ -76,13 +90,14 @@ export const deleteRecipe = createAsyncThunk<Recipe["id"], Recipe["id"]>(
   }
 );
 
-export const getRecipes = createAsyncThunk<Recipe[]>(
+export const getRecipes = createAsyncThunk<string, void, RejectType>(
   "recipe/getRecipes",
-  async (_, { rejectWithValue }) => {
+  async (_, { dispatch, rejectWithValue }) => {
     try {
       const response = await api.get("/");
 
-      return response.data;
+      dispatch(recipeActions.setRecipes(response.data));
+      return "";
     } catch (error) {
       console.error(error);
       return rejectWithValue("Failed to get recipes");
@@ -90,102 +105,57 @@ export const getRecipes = createAsyncThunk<Recipe[]>(
   }
 );
 
-export const extraReducers = (builder: ActionReducerMapBuilder<RootState>) => {
-  builder
-    .addCase(createNewRecipe.pending, (state) => {
-      state.status = "loading";
-    })
-    .addCase(createNewRecipe.rejected, (state, { payload }) => {
-      state.status = "failed";
+const handleStatusUpdate = {
+  pending: (state: RecipeState) => {
+    state.status = "loading";
+  },
+  fulfilled: (
+    state: RecipeState,
+    { payload: message }: PayloadAction<string>
+  ) => {
+    state.status = "idle";
 
-      state.notifications.push({
-        id: Date.now(),
-        message: payload as string,
-        type: "error",
-        duration: 3000,
-      });
-    })
-    .addCase(createNewRecipe.fulfilled, (state, { payload }) => {
-      if (payload) {
-        state.status = "succeeded";
-        state.recipes.push(payload);
-
-        state.notifications.push({
-          id: Date.now(),
-          message: "Recipe added successfully",
-          type: "success",
-          duration: 3000,
-        });
-      }
+    state.notifications.push({
+      id: Date.now(),
+      message,
+      type: "success",
+      duration: 3000,
     });
+  },
+  rejected: (
+    state: RecipeState,
+    { payload: message }: PayloadAction<string | undefined>
+  ) => {
+    state.status = "failed";
 
-  builder
-    .addCase(updateRecipe.pending, (state) => {
-      state.status = "loading";
-    })
-    .addCase(updateRecipe.rejected, (state, { payload }) => {
-      state.status = "failed";
-
-      state.notifications.push({
-        id: Date.now(),
-        message: payload as string,
-        type: "error",
-        duration: 3000,
-      });
-    })
-    .addCase(updateRecipe.fulfilled, (state, { payload }) => {
-      if (payload) {
-        state.status = "succeeded";
-        state.recipes = state.recipes.map((recipe) => {
-          if (recipe.id === payload.id) {
-            return { ...recipe, ...payload };
-          }
-
-          return recipe;
-        });
-
-        state.notifications.push({
-          id: Date.now(),
-          message: "Recipe updated successfully",
-          type: "success",
-          duration: 3000,
-        });
-      }
+    state.notifications.push({
+      id: Date.now(),
+      message: message || "An error occurred",
+      type: "error",
+      duration: 3000,
     });
+  },
+};
+
+export const extraReducers = (
+  builder: ActionReducerMapBuilder<RecipeState>
+) => {
+  builder
+    .addCase(createNewRecipe.pending, handleStatusUpdate.pending)
+    .addCase(createNewRecipe.rejected, handleStatusUpdate.rejected)
+    .addCase(createNewRecipe.fulfilled, handleStatusUpdate.fulfilled);
 
   builder
-    .addCase(deleteRecipe.pending, (state) => {
-      state.status = "loading";
-    })
-    .addCase(deleteRecipe.rejected, (state, { payload }) => {
-      state.status = "failed";
-      state.notifications.push({
-        id: Date.now(),
-        message: payload as string,
-        type: "error",
-        duration: 3000,
-      });
-    })
-    .addCase(deleteRecipe.fulfilled, (state, { payload }) => {
-      if (payload) {
-        state.status = "succeeded";
-        state.recipes = state.recipes.filter((recipe) => recipe.id !== payload);
-
-        state.notifications.push({
-          id: Date.now(),
-          message: "Recipe deleted successfully",
-          type: "success",
-          duration: 3000,
-        });
-      }
-    });
+    .addCase(updateRecipe.pending, handleStatusUpdate.pending)
+    .addCase(updateRecipe.rejected, handleStatusUpdate.rejected)
+    .addCase(updateRecipe.fulfilled, handleStatusUpdate.fulfilled);
 
   builder
-    .addCase(getRecipes.pending, (state) => {
-      state.status = "loading";
-    })
-    .addCase(getRecipes.fulfilled, (state, { payload }) => {
-      state.status = "succeeded";
-      state.recipes = payload;
-    });
+    .addCase(deleteRecipe.pending, handleStatusUpdate.pending)
+    .addCase(deleteRecipe.rejected, handleStatusUpdate.rejected)
+    .addCase(deleteRecipe.fulfilled, handleStatusUpdate.fulfilled);
+
+  builder
+    .addCase(getRecipes.pending, handleStatusUpdate.pending)
+    .addCase(getRecipes.rejected, handleStatusUpdate.rejected);
 };
