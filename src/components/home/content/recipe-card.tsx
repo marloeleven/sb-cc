@@ -44,7 +44,7 @@ function RecipeImage({
         alt={alt}
         fill
         loading="lazy"
-        style={{ objectFit: "cover", borderRadius: 15 }}
+        style={{ objectFit: "cover", borderRadius: 20 }}
         onLoad={() => setIsLoading(false)}
       />
 
